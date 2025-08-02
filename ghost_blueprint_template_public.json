@@ -1,0 +1,1097 @@
+{
+  "name": "Integration Telegram Bot, Google Calendar, Tools",
+  "flow": [
+    {
+      "id": 1,
+      "module": "telegram:WatchUpdates",
+      "version": 1,
+      "parameters": {
+        "__IMTHOOK__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+          }
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:telegramapi",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "mapper": null,
+      "metadata": {
+        "designer": {
+          "x": 302,
+          "y": 21
+        }
+      },
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 3,
+              "module": "google-calendar:searchEvents",
+              "version": 5,
+              "parameters": {
+                "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+              },
+              "filter": {
+                "name": "check for plan my day request",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.message.text}}",
+                      "b": "plan my day",
+                      "o": "text:contain:ci"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "limit": "24",
+                "timeMax": "{{addDays(1.message.date; 1)}}",
+                "timeMin": "{{1.message.date}}",
+                "calendar": "__REPLACE_WITH_YOUR_CALENDAR_ID__",
+                "eventTypes": [
+                  "default",
+                  "fromGmail",
+                  "focusTime",
+                  "outOfOffice",
+                  "workingLocation"
+                ],
+                "singleEvents": true
+              },
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": -150
+                },
+                "restore": {
+                  "expect": {
+                    "orderBy": {
+                      "mode": "chose",
+                      "label": "Empty"
+                    },
+                    "calendar": "__REPLACE_WITH_YOUR_CALENDAR_ID__",
+                    "eventTypes": {
+                      "mode": "chose"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:google",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ],
+                "expect": [
+                  {
+                    "name": "calendar",
+                    "type": "select",
+                    "label": "Calendar ID",
+                    "required": true
+                  },
+                  {
+                    "name": "timeMin",
+                    "time": true,
+                    "type": "date",
+                    "label": "Start Date"
+                  },
+                  {
+                    "name": "timeMax",
+                    "time": true,
+                    "type": "date",
+                    "label": "End Date"
+                  },
+                  {
+                    "name": "updatedMin",
+                    "time": true,
+                    "type": "date",
+                    "label": "Updated from"
+                  },
+                  {
+                    "name": "singleEvents",
+                    "type": "boolean",
+                    "label": "Single Events",
+                    "required": true
+                  },
+                  {
+                    "name": "q",
+                    "type": "text",
+                    "label": "Query"
+                  },
+                  {
+                    "name": "eventTypes",
+                    "type": "select",
+                    "label": "Event Types",
+                    "multiple": true,
+                    "validate": {
+                      "enum": [
+                        "default",
+                        "fromGmail",
+                        "focusTime",
+                        "outOfOffice",
+                        "workingLocation"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "orderBy",
+                    "type": "select",
+                    "label": "Order By",
+                    "validate": {
+                      "enum": [
+                        "startTime",
+                        "updated"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "limit",
+                    "type": "uinteger",
+                    "label": "Limit"
+                  }
+                ]
+              }
+            },
+            {
+              "id": 5,
+              "module": "util:TextAggregator",
+              "version": 1,
+              "parameters": {
+                "feeder": 3,
+                "rowSeparator": "\n"
+              },
+              "mapper": {
+                "value": "{{3.summary}} at {{3.start}} "
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": -150
+                },
+                "restore": {
+                  "extra": {
+                    "feeder": {
+                      "label": "Google Calendar - Search Events [3]"
+                    }
+                  },
+                  "parameters": {
+                    "rowSeparator": {
+                      "label": "New row"
+                    }
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "rowSeparator",
+                    "type": "select",
+                    "label": "Row separator",
+                    "validate": {
+                      "enum": [
+                        "\n",
+                        "\t",
+                        "other"
+                      ]
+                    }
+                  }
+                ],
+                "expect": [
+                  {
+                    "name": "value",
+                    "type": "text",
+                    "label": "Text"
+                  }
+                ],
+                "advanced": true
+              }
+            },
+            {
+              "id": 6,
+              "module": "gemini-ai:createACompletionGeminiPro",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+              },
+              "mapper": {
+                "model": "gemini-2.5-flash",
+                "contents": [
+                  {
+                    "role": "user",
+                    "parts": [
+                      {
+                        "type": "text",
+                        "text": "you are ghost my personel assistant (G.H.O.S.T.\tGuided Human Optimization & Scheduling Tool) and i am {{1.message.from.first_name}}, \n\nthis is the query i have( {{1.message.text}})\nGhost based on today\u2019s Google Calendar events, create a smart, detailed, and motivating day plan for me.\n\nInclude clear time blocks for meetings, deep work, meals, short breaks, physical activity, and personal time.\n\nOptimize for productivity, mental focus, and well-being \u2014 make it feel like I\u2019m working alongside a high-performance coach.\n\nAdd friendly, uplifting reminders where needed to keep me on track.(see that there are not many remainders as such just keep it simple and dont use much emojis make it look formal)  make the result look clear and leave a line after every time stamp see that there are no (**) such symbols in the result\n\nOutput in a clean, hour-by-hour schedule format with see that time stamps are in bold charecters. check the time zone properly and read the time from the calender properly the time zone is indian standard time. and dont give the time in 24hrs give it in 12 hrs. in the last give me a motivational line for the day (example:   ......................-Ghost)\r\nEvents:\r\n {{5.text}} \r\nKeep the response to less than 1000 characters"
+                      }
+                    ]
+                  }
+                ],
+                "generationConfig": {
+                  "thinkingConfig": {}
+                }
+              },
+              "metadata": {
+                "designer": {
+                  "x": 1200,
+                  "y": -150
+                },
+                "restore": {
+                  "parameters": {
+                    "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+                  },
+                  "expect": {
+                    "model": {
+                      "mode": "chose",
+                      "label": "Gemini 2.5 Flash"
+                    },
+                    "contents": {
+                      "mode": "chose",
+                      "items": [
+                        {
+                          "role": {
+                            "mode": "chose",
+                            "label": "User"
+                          },
+                          "parts": {
+                            "mode": "chose",
+                            "items": [
+                              {
+                                "type": {
+                                  "mode": "chose",
+                                  "label": "Text"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "safetySettings": {
+                      "mode": "chose"
+                    },
+                    "generationConfig": {
+                      "nested": {
+                        "stopSequences": {
+                          "mode": "chose"
+                        },
+                        "responseModalities": {
+                          "mode": "chose"
+                        },
+                        "thinkingConfig": {
+                          "nested": {
+                            "include_thoughts": {
+                              "mode": "chose"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:gemini-ai-q9zyjp",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ],
+                "expect": [
+                  {
+                    "name": "model",
+                    "type": "select",
+                    "label": "AI Model",
+                    "required": true
+                  },
+                  {
+                    "name": "contents",
+                    "type": "array",
+                    "label": "Messages",
+                    "required": true,
+                    "spec": [
+                      {
+                        "name": "role",
+                        "type": "select",
+                        "label": "Role",
+                        "options": [
+                          {
+                            "label": "User",
+                            "value": "user"
+                          },
+                          {
+                            "label": "Model",
+                            "value": "model"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "parts",
+                        "spec": [
+                          {
+                            "name": "type",
+                            "type": "select",
+                            "label": "Message Type",
+                            "options": [
+                              {
+                                "label": "Text",
+                                "value": "text",
+                                "nested": [
+                                  {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Text",
+                                    "required": false
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "File",
+                                "value": "file",
+                                "nested": [
+                                  {
+                                    "name": "file_data",
+                                    "spec": [
+                                      {
+                                        "name": "mime_type",
+                                        "type": "text",
+                                        "label": "Mime Type",
+                                        "required": false
+                                      },
+                                      {
+                                        "help": "You get this from the 'Upload a File' module.",
+                                        "name": "file_uri",
+                                        "type": "text",
+                                        "label": "File URI",
+                                        "required": false
+                                      }
+                                    ],
+                                    "type": "collection",
+                                    "label": "File Data",
+                                    "required": false
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "array",
+                        "label": "Parts"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "safetySettings",
+                    "type": "array",
+                    "label": "Safety Settings",
+                    "spec": [
+                      {
+                        "name": "category",
+                        "type": "select",
+                        "label": "Category",
+                        "options": [
+                          {
+                            "label": "Harassment content",
+                            "value": "HARM_CATEGORY_HARASSMENT"
+                          },
+                          {
+                            "label": "Hate speech and content",
+                            "value": "HARM_CATEGORY_HATE_SPEECH"
+                          },
+                          {
+                            "label": "Sexually explicit content.",
+                            "value": "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+                          },
+                          {
+                            "label": "Dangerous content:",
+                            "value": "HARM_CATEGORY_DANGEROUS_CONTENT"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "threshold",
+                        "type": "select",
+                        "label": "Threshold",
+                        "options": [
+                          {
+                            "label": "Block low and above.",
+                            "value": "BLOCK_LOW_AND_ABOVE"
+                          },
+                          {
+                            "label": "Block medium and above.",
+                            "value": "BLOCK_MEDIUM_AND_ABOVE"
+                          },
+                          {
+                            "label": "Block only high.",
+                            "value": "BLOCK_ONLY_HIGH"
+                          },
+                          {
+                            "label": "Block none.",
+                            "value": "BLOCK_NONE"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "generationConfig",
+                    "type": "collection",
+                    "label": "Generation configurations",
+                    "spec": [
+                      {
+                        "name": "stopSequences",
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "spec": {
+                          "type": "text",
+                          "label": "Stop Sequence",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "name": "responseModalities",
+                        "type": "select",
+                        "label": "Response Modalities",
+                        "multiple": true,
+                        "validate": {
+                          "enum": [
+                            "text",
+                            "image"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "maxOutputTokens",
+                        "type": "number",
+                        "label": "Max Output Tokens"
+                      },
+                      {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                          "max": 1,
+                          "min": 0
+                        }
+                      },
+                      {
+                        "name": "topP",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                          "max": 1,
+                          "min": 0
+                        }
+                      },
+                      {
+                        "name": "topK",
+                        "type": "number",
+                        "label": "Top K"
+                      },
+                      {
+                        "name": "thinkingConfig",
+                        "type": "collection",
+                        "label": "Thinking Config",
+                        "spec": [
+                          {
+                            "name": "thinkingBudget",
+                            "type": "number",
+                            "label": "Thinking Budget"
+                          },
+                          {
+                            "name": "include_thoughts",
+                            "type": "boolean",
+                            "label": "Include Thoughts"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "responseMimeType",
+                        "type": "text",
+                        "label": "Response Mime Type"
+                      },
+                      {
+                        "name": "responseSchema",
+                        "type": "any",
+                        "label": "Response Schema"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tools",
+                    "type": "any",
+                    "label": "Tools"
+                  },
+                  {
+                    "name": "tool_config",
+                    "type": "any",
+                    "label": "Tool Config"
+                  }
+                ]
+              }
+            },
+            {
+              "id": 7,
+              "module": "telegram:SendReplyMessage",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+              },
+              "mapper": {
+                "text": "{{6.result}}",
+                "chatId": "{{1.message.chat.id}}",
+                "parseMode": "",
+                "replyMarkup": "",
+                "messageThreadId": "",
+                "replyToMessageId": "",
+                "replyMarkupAssembleType": "reply_markup_enter"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 1500,
+                  "y": -150
+                },
+                "restore": {
+                  "expect": {
+                    "parseMode": {
+                      "label": "Empty"
+                    },
+                    "disableNotification": {
+                      "mode": "chose"
+                    },
+                    "replyMarkupAssembleType": {
+                      "label": "Enter the Reply Markup"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:telegram",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ],
+                "expect": [
+                  {
+                    "name": "chatId",
+                    "type": "text",
+                    "label": "Chat ID",
+                    "required": true
+                  },
+                  {
+                    "name": "text",
+                    "type": "text",
+                    "label": "Text",
+                    "required": true
+                  },
+                  {
+                    "name": "messageThreadId",
+                    "type": "number",
+                    "label": "Message Thread ID"
+                  },
+                  {
+                    "name": "parseMode",
+                    "type": "select",
+                    "label": "Parse Mode",
+                    "validate": {
+                      "enum": [
+                        "Markdown",
+                        "HTML"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "disableNotification",
+                    "type": "boolean",
+                    "label": "Disable Notifications"
+                  },
+                  {
+                    "name": "disableWebPagePreview",
+                    "type": "boolean",
+                    "label": "Disable Link Previews"
+                  },
+                  {
+                    "name": "replyToMessageId",
+                    "type": "number",
+                    "label": "Original Message ID"
+                  },
+                  {
+                    "name": "replyMarkupAssembleType",
+                    "type": "select",
+                    "label": "Enter/Assemble the Reply Markup Field",
+                    "validate": {
+                      "enum": [
+                        "reply_markup_enter",
+                        "reply_markup_assemble"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "replyMarkup",
+                    "type": "text",
+                    "label": "Reply Markup"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 8,
+              "module": "gemini-ai:createACompletionGeminiPro",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+              },
+              "filter": {
+                "name": "Any other Query",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.message.text}}",
+                      "b": "plan my day",
+                      "o": "text:notcontain:ci"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "model": "gemini-2.5-flash",
+                "contents": [
+                  {
+                    "role": "user",
+                    "parts": [
+                      {
+                        "text": "You are Ghost personal Ai assistant for {{1.message.chat.first_name}} give a  good smart and concise answer for the query clearly and helpfully. see that the answer is short and simple as you are in chat with Anunai \nQuery: {{1.message.text}}",
+                        "type": "text"
+                      }
+                    ]
+                  }
+                ],
+                "generationConfig": {}
+              },
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": 150
+                },
+                "restore": {
+                  "expect": {
+                    "model": {
+                      "mode": "chose",
+                      "label": "Gemini 2.5 Flash"
+                    },
+                    "contents": {
+                      "mode": "chose",
+                      "items": [
+                        {
+                          "role": {
+                            "mode": "chose",
+                            "label": "User"
+                          },
+                          "parts": {
+                            "mode": "chose",
+                            "items": [
+                              {
+                                "type": {
+                                  "mode": "chose",
+                                  "label": "Text"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "safetySettings": {
+                      "mode": "chose"
+                    },
+                    "generationConfig": {
+                      "nested": {
+                        "stopSequences": {
+                          "mode": "chose"
+                        },
+                        "responseModalities": {
+                          "mode": "chose"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:gemini-ai-q9zyjp",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ],
+                "expect": [
+                  {
+                    "name": "model",
+                    "type": "select",
+                    "label": "AI Model",
+                    "required": true
+                  },
+                  {
+                    "name": "contents",
+                    "spec": [
+                      {
+                        "name": "role",
+                        "type": "select",
+                        "label": "Role",
+                        "options": [
+                          {
+                            "label": "User",
+                            "value": "user"
+                          },
+                          {
+                            "label": "Model",
+                            "value": "model"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "parts",
+                        "spec": [
+                          {
+                            "name": "type",
+                            "type": "select",
+                            "label": "Message Type",
+                            "options": [
+                              {
+                                "label": "Text",
+                                "value": "text",
+                                "nested": [
+                                  {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Text",
+                                    "required": false
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "File",
+                                "value": "file",
+                                "nested": [
+                                  {
+                                    "name": "file_data",
+                                    "spec": [
+                                      {
+                                        "name": "mime_type",
+                                        "type": "text",
+                                        "label": "Mime Type",
+                                        "required": false
+                                      },
+                                      {
+                                        "help": "You get this from the 'Upload a File' module.",
+                                        "name": "file_uri",
+                                        "type": "text",
+                                        "label": "File URI",
+                                        "required": false
+                                      }
+                                    ],
+                                    "type": "collection",
+                                    "label": "File Data",
+                                    "required": false
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "array",
+                        "label": "Parts"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Messages",
+                    "required": true
+                  },
+                  {
+                    "name": "safetySettings",
+                    "spec": [
+                      {
+                        "name": "category",
+                        "type": "select",
+                        "label": "Category",
+                        "options": [
+                          {
+                            "label": "Harassment content",
+                            "value": "HARM_CATEGORY_HARASSMENT"
+                          },
+                          {
+                            "label": "Hate speech and content",
+                            "value": "HARM_CATEGORY_HATE_SPEECH"
+                          },
+                          {
+                            "label": "Sexually explicit content.",
+                            "value": "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+                          },
+                          {
+                            "label": "Dangerous content:",
+                            "value": "HARM_CATEGORY_DANGEROUS_CONTENT"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "threshold",
+                        "type": "select",
+                        "label": "Threshold",
+                        "options": [
+                          {
+                            "label": "Block low and above.",
+                            "value": "BLOCK_LOW_AND_ABOVE"
+                          },
+                          {
+                            "label": "Block medium and above.",
+                            "value": "BLOCK_MEDIUM_AND_ABOVE"
+                          },
+                          {
+                            "label": "Block only high.",
+                            "value": "BLOCK_ONLY_HIGH"
+                          },
+                          {
+                            "label": "Block none.",
+                            "value": "BLOCK_NONE"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Safety Settings"
+                  },
+                  {
+                    "name": "generationConfig",
+                    "spec": [
+                      {
+                        "name": "stopSequences",
+                        "spec": {
+                          "name": "value",
+                          "type": "text",
+                          "label": "Stop Sequence"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences"
+                      },
+                      {
+                        "name": "responseModalities",
+                        "type": "select",
+                        "label": "Response Modalities",
+                        "multiple": true,
+                        "validate": {
+                          "enum": [
+                            "text",
+                            "image"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "maxOutputTokens",
+                        "type": "number",
+                        "label": "Max Output Tokens"
+                      },
+                      {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                          "max": 1,
+                          "min": 0
+                        }
+                      },
+                      {
+                        "name": "topP",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                          "max": 1,
+                          "min": 0
+                        }
+                      },
+                      {
+                        "name": "topK",
+                        "type": "number",
+                        "label": "Top K"
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Generation configurations"
+                  },
+                  {
+                    "name": "tools",
+                    "type": "any",
+                    "label": "Tools"
+                  },
+                  {
+                    "name": "tool_config",
+                    "type": "any",
+                    "label": "Tool Config"
+                  }
+                ]
+              }
+            },
+            {
+              "id": 9,
+              "module": "telegram:SendReplyMessage",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+              },
+              "mapper": {
+                "text": "{{8.result}}",
+                "chatId": "{{1.message.chat.id}}",
+                "parseMode": "",
+                "replyMarkup": "",
+                "messageThreadId": "",
+                "replyToMessageId": "",
+                "replyMarkupAssembleType": "reply_markup_enter"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 150
+                },
+                "restore": {
+                  "expect": {
+                    "parseMode": {
+                      "label": "Empty"
+                    },
+                    "disableNotification": {
+                      "mode": "chose"
+                    },
+                    "replyMarkupAssembleType": {
+                      "label": "Enter the Reply Markup"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": "__REPLACE_WITH_YOUR_CONNECTION_ID__"
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:telegram",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ],
+                "expect": [
+                  {
+                    "name": "chatId",
+                    "type": "text",
+                    "label": "Chat ID",
+                    "required": true
+                  },
+                  {
+                    "name": "text",
+                    "type": "text",
+                    "label": "Text",
+                    "required": true
+                  },
+                  {
+                    "name": "messageThreadId",
+                    "type": "number",
+                    "label": "Message Thread ID"
+                  },
+                  {
+                    "name": "parseMode",
+                    "type": "select",
+                    "label": "Parse Mode",
+                    "validate": {
+                      "enum": [
+                        "Markdown",
+                        "HTML"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "disableNotification",
+                    "type": "boolean",
+                    "label": "Disable Notifications"
+                  },
+                  {
+                    "name": "disableWebPagePreview",
+                    "type": "boolean",
+                    "label": "Disable Link Previews"
+                  },
+                  {
+                    "name": "replyToMessageId",
+                    "type": "number",
+                    "label": "Original Message ID"
+                  },
+                  {
+                    "name": "replyMarkupAssembleType",
+                    "type": "select",
+                    "label": "Enter/Assemble the Reply Markup Field",
+                    "validate": {
+                      "enum": [
+                        "reply_markup_enter",
+                        "reply_markup_assemble"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "replyMarkup",
+                    "type": "text",
+                    "label": "Reply Markup"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "slots": null,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "us2.make.com",
+    "notes": []
+  }
+}
