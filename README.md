@@ -40,7 +40,7 @@ G.H.O.S.T. is powered by a Make.com automation scenario that integrates:
 
 ## ⚙️ System Architecture – Make.com Scenario
 
-![Make.com Scenario](demo/screenshots/Screenshot_2025-08-02_222029.png)
+![Make.com Scenario](demo/Screenshot_2025-08-02_222029.png)
 
 This Make.com scenario powers the entire assistant:
 
@@ -58,19 +58,19 @@ No backend code. Fully modular. Easy to customize.
 ## 🖼️ Screenshots
 
 ### ✨ Daily Planner in Action
-![Plan my day](demo/screenshots/Screenshot_2025-08-02_222535.png)
+![Plan my day](demo/Screenshot_2025-08-02_222535.png)
 > Ghost builds a full daily plan — from breakfast to bedtime — in a structured, motivating format.
 
 ---
 
 ### 💬 Smart Chat Replies
-![Smart replies](demo/screenshots/Screenshot_2025-08-02_222701.png)
+![Smart replies](demo/Screenshot_2025-08-02_222701.png)
 > Ask Ghost anything — from productivity tips to travel info — and get helpful replies instantly.
 
 ---
 
 ### 📅 Your Calendar Behind the Scenes
-![Google Calendar](demo/screenshots/Screenshot_2025-07-20_183855.png)
+![Google Calendar](demo/Screenshot_2025-07-20_183855.png)
 > Ghost pulls structured data from your Google Calendar to ensure your daily plan is relevant and realistic.
 
 ---
@@ -93,11 +93,10 @@ Ghost-AI-Personal-Assistant/
 ├── ghost_blueprint_template_redacted.json
 ├── README.md
 └── demo/
-    └── screenshots/
-        ├── Screenshot_2025-08-02_222535.png  # plan my day output
-        ├── Screenshot_2025-08-02_222701.png  # query response
-        ├── Screenshot_2025-07-20_183855.png  # calendar view
-        └── Screenshot_2025-08-02_222029.png  # make.com scenario
+    ├── Screenshot_2025-08-02_222535.png  # plan my day output
+    ├── Screenshot_2025-08-02_222701.png  # query response
+    ├── Screenshot_2025-07-20_183855.png  # calendar view
+    └── Screenshot_2025-08-02_222029.png  # make.com scenario
 ```
 ---
 ## 👨‍💻 Author
