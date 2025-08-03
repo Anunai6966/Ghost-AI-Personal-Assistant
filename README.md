@@ -92,13 +92,13 @@ No backend code. Fully modular. Easy to customize.
 Ghost-AI-Personal-Assistant/
 ├── ghost_blueprint_template_redacted.json
 ├── README.md
-├── demo/
-│   └── screenshots/
-│       ├── Screenshot_2025-08-02_222535.png  # plan my day output
-│       ├── Screenshot_2025-08-02_222701.png  # query response
-│       ├── Screenshot_2025-07-20_183855.png  # calendar view
-│       └── Screenshot_2025-08-02_222029.png  # make.com scenario
-└── LICENSE
+└── demo/
+    └── screenshots/
+        ├── Screenshot_2025-08-02_222535.png  # plan my day output
+        ├── Screenshot_2025-08-02_222701.png  # query response
+        ├── Screenshot_2025-07-20_183855.png  # calendar view
+        └── Screenshot_2025-08-02_222029.png  # make.com scenario
+```
 ---
 ## 👨‍💻 Author
 
