@@ -80,3 +80,26 @@ G.H.O.S.T. is powered by a **Make.com** automation scenario that integrates:
    - ✅ Google Calendar Connection
    - ✅ Gemini API credentials
 4. Activate the scenario and start chatting with your bot on Telegram
+## 📁 Project Structure
+
+```bash
+Ghost-AI-Personal-Assistant/
+├── ghost_blueprint_template_redacted.json
+├── README.md
+└── demo/
+    ├── Screenshot_2025-08-02_222535.png  # plan my day output
+    ├── Screenshot_2025-08-02_222701.png  # smart query response
+    ├── Screenshot_2025-07-20_183855.png  # Google Calendar integration
+    └── Screenshot_2025-08-02_222029.png  # Make.com scenario structure
+```
+## 👨‍💻 Author
+
+**L Anunai Sai Goud**  
+Solo-built this AI automation project  
+📫 [Connect on LinkedIn](https://www.linkedin.com/in/anunai/)
+
+---
+
+## 📄 License
+
+[MIT License](LICENSE)
