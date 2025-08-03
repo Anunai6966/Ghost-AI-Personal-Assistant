@@ -86,18 +86,19 @@ No backend code. Fully modular. Easy to customize.
 4. Deploy and start chatting with Ghost via Telegram!
 
 ---
-
 ## 📁 Project Structure
+
+```bash
 Ghost-AI-Personal-Assistant/
 ├── ghost_blueprint_template_redacted.json
 ├── README.md
-└── demo/
-  └── screenshots/
-  ├── Screenshot_2025-08-02_222535.png
-  ├── Screenshot_2025-08-02_222701.png
-  ├── Screenshot_2025-07-20_183855.png
-  └── Screenshot_2025-08-02_222029.png
-
+├── demo/
+│   └── screenshots/
+│       ├── Screenshot_2025-08-02_222535.png  # plan my day output
+│       ├── Screenshot_2025-08-02_222701.png  # query response
+│       ├── Screenshot_2025-07-20_183855.png  # calendar view
+│       └── Screenshot_2025-08-02_222029.png  # make.com scenario
+└── LICENSE
 ---
 ## 👨‍💻 Author
 
