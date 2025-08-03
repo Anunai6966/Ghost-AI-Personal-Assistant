@@ -40,7 +40,7 @@ G.H.O.S.T. is powered by a Make.com automation scenario that integrates:
 
 ## ⚙️ System Architecture – Make.com Scenario
 
-![Make.com Scenario](demo/Screenshot_2025-08-02_222029.png)
+![Make.com Scenario](demo/Screenshot 2025-08-02 222029.png)
 
 This Make.com scenario powers the entire assistant:
 
