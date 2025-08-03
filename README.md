@@ -8,105 +8,75 @@ Built using **no-code tools** and **generative AI**, Ghost reads your Google Cal
 
 ## 🔍 What G.H.O.S.T. Can Do
 
-| Feature | Description |
-|--------|-------------|
-| 🧠 Smart Chat Assistant | Answers natural queries via Telegram using Gemini AI |
-| 📅 Personalized Day Planner | Plans your day based on your calendar events |
-| ⏱️ Hour-by-Hour Schedule | Suggests a clean, motivating routine with time blocks |
-| 📬 Future-Ready | Email summarization, smart reminders, productivity scoring (coming soon) |
+| Feature                  | Description                                                              |
+|--------------------------|--------------------------------------------------------------------------|
+| 🧠 Smart Chat Assistant   | Answers natural queries via Telegram using Gemini AI                     |
+| 📅 Personalized Planner   | Plans your day based on calendar events                                  |
+| ⏱️ Hour-by-Hour Schedule | Suggests a motivating routine with focus blocks and breaks               |
+| 📬 Future-Ready           | Email summarization, smart reminders, productivity scoring (coming soon) |
 
 ---
 
 ## 🧠 How G.H.O.S.T. Works
 
-G.H.O.S.T. is powered by a Make.com automation scenario that integrates:
+G.H.O.S.T. is powered by a **Make.com** automation scenario that integrates:
 
-- 📥 Telegram Bot – the front-end interface where you interact with Ghost
-- 📅 Google Calendar – source of your daily events
-- ✨ Gemini AI – to generate intelligent responses and plans
-- 🔧 Make.com – the no-code automation engine that ties everything together
+- **Telegram Bot** – your chat interface
+- **Google Calendar API** – for accessing events
+- **Gemini AI** – for contextual planning and smart replies
+- **Make.com** – the no-code engine that orchestrates it all
 
 ### 🛠️ Workflow Logic
 
-1. You message your **Telegram bot** with either:
-   - “Plan my day” → for schedule generation
-   - Any other query → for quick AI answers
-2. Ghost checks your Google Calendar (for day planning)
-3. Sends context to **Gemini AI**
-4. AI responds with a structured plan or answer
-5. Telegram bot replies instantly
+1. You message the **Telegram bot** with either:
+   - `Plan my day` → for a personalized schedule
+   - Any query → for general AI support
+2. Ghost checks your Google Calendar (if applicable)
+3. Sends details to **Gemini AI**
+4. Gemini generates a structured plan or intelligent reply
+5. The Telegram bot sends it back to you instantly
 
 ---
 
-## ⚙️ System Architecture – Make.com Scenario
+## ⚙️ System Architecture
 
-![Make.com Scenario](demo/Screenshot 2025-08-02 222029.png)
+![Make.com Scenario](demo/Screenshot_2025-08-02_222029.png)
 
-This Make.com scenario powers the entire assistant:
-
-- 🟦 **Telegram Bot:** Watches for user messages
-- 🟩 **Router:** Decides between a planning flow or general Q&A
-- 🔵 **Google Calendar:** Fetches upcoming events
-- 🛠️ **Tools Module:** Aggregates events into readable text
-- 🌟 **Gemini AI:** Generates a personalized plan or smart response
-- 📤 **Telegram Bot:** Sends the final output back to the user
-
-No backend code. Fully modular. Easy to customize.
+- 🟦 **Telegram Bot:** Watches for messages
+- 🟩 **Router:** Splits logic between schedule vs. generic query
+- 🔵 **Google Calendar:** Pulls events from your connected calendar
+- 🛠️ **Tools Module:** Aggregates & formats calendar entries
+- 🌟 **Gemini AI:** Writes the reply or daily plan
+- 📤 **Telegram Bot:** Sends it to the user
 
 ---
 
 ## 🖼️ Screenshots
 
-### ✨ Daily Planner in Action
-![Plan my day](demo/Screenshot_2025-08-02_222535.png)
-> Ghost builds a full daily plan — from breakfast to bedtime — in a structured, motivating format.
+### ✨ Daily Planner Output
+![Daily Plan](demo/Screenshot_2025-08-02_222535.png)
+> Ghost crafts a complete day schedule with time blocks — from morning routines to rest.
 
 ---
 
-### 💬 Smart Chat Replies
-![Smart replies](demo/Screenshot_2025-08-02_222701.png)
-> Ask Ghost anything — from productivity tips to travel info — and get helpful replies instantly.
+### 💬 Smart AI Chat Response
+![Smart Replies](demo/Screenshot_2025-08-02_222701.png)
+> Ask Ghost anything. It gives contextual answers instantly using Gemini AI.
 
 ---
 
-### 📅 Your Calendar Behind the Scenes
-![Google Calendar](demo/Screenshot_2025-07-20_183855.png)
-> Ghost pulls structured data from your Google Calendar to ensure your daily plan is relevant and realistic.
+### 📅 Google Calendar Integration
+![Google Calendar View](demo/Screenshot_2025-07-20_183855.png)
+> Ghost reads your actual schedule to build realistic plans.
 
 ---
 
 ## 🚀 Getting Started
 
-1. Clone this repo
-2. Import `ghost_blueprint_template_redacted.json` into [Make.com](https://make.com)
-3. Replace placeholders with:
-   - Your **Telegram Bot token**
-   - Your **Google Calendar connection**
-   - Your **Gemini API credentials**
-4. Deploy and start chatting with Ghost via Telegram!
-
----
-## 📁 Project Structure
-
-```bash
-Ghost-AI-Personal-Assistant/
-├── ghost_blueprint_template_redacted.json
-├── README.md
-└── demo/
-    ├── Screenshot_2025-08-02_222535.png  # plan my day output
-    ├── Screenshot_2025-08-02_222701.png  # query response
-    ├── Screenshot_2025-07-20_183855.png  # calendar view
-    └── Screenshot_2025-08-02_222029.png  # make.com scenario
-```
----
-## 👨‍💻 Author
-
-**L Anunai Sai Goud**  
-Solo-built this AI automation project.  
-📫 [LinkedIn](https://www.linkedin.com/in/anunai/)
-
----
-
-## 📄 License
-
-MIT License
+1. Clone this repository
+2. Import `ghost_blueprint_template_redacted.json` into [Make.com](https://www.make.com)
+3. Replace placeholder credentials:
+   - ✅ Telegram Bot Token
+   - ✅ Google Calendar Connection
+   - ✅ Gemini API credentials
+4. Activate the scenario and start chatting with your bot on Telegram
